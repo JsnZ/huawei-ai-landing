@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI开发实战训练营｜4小时吃透企业级AI项目落地</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            lightBg: '#F3F7FD', /* 极浅冰川蓝背景 */
+                            card: '#FFFFFF', /* 纯白卡片 */
+                            textDark: '#0F172A',
+                            textMuted: '#475569',
+                            primary: '#2563EB',
+                            primaryGradStart: '#4F46E5',
+                            primaryGradEnd: '#06B6D4',
+                            accentGradStart: '#FF2E93',
+                            accentGradEnd: '#FF5E62'
+                        }
+                    },
+                    boxShadow: {
+                        'premium': '0 10px 30px -5px rgba(37, 99, 235, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03)',
+                        'button': '0 8px 24px -4px rgba(255, 46, 147, 0.3)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+            background-color: #E2EAF8; /* 电脑端外侧背景，衬托手机沙盒 */
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* 隐藏滚动条 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* 呼吸按钮扫光特效 */
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        .btn-shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: skewX(-25deg);
+            animation: shimmer 3.5s infinite;
+        }
+    </style>
+</head>
+<body class="text-brand-textDark flex justify-center min-h-screen">
+
+    <!-- 定义全局扁平微渐变SVG图层引用 -->
+    <svg class="absolute w-0 h-0" width="0" height="0" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="blueTeal" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#4F46E5" />
+                <stop offset="100%" stop-color="#06B6D4" />
+            </linearGradient>
+            <linearGradient id="pinkOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FF2E93" />
+                <stop offset="100%" stop-color="#FF5E62" />
+            </linearGradient>
+            <linearGradient id="purplePink" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#7C3AED" />
+                <stop offset="100%" stop-color="#EC4899" />
+            </linearGradient>
+            <linearGradient id="yellowOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#F59E0B" />
+                <stop offset="100%" stop-color="#EF4444" />
+            </linearGradient>
+            <linearGradient id="greenTeal" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#10B981" />
+                <stop offset="100%" stop-color="#059669" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- 移动端容器限制 -->
+    <div class="w-full max-w-[480px] bg-brand-lightBg min-h-screen flex flex-col relative shadow-2xl border-x border-blue-100/60 pb-24">
+        
+        <!-- 头部背景光效 -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[320px] h-[320px] bg-blue-200/30 rounded-full blur-[80px] pointer-events-none"></div>
+
+        <!-- 1. 主头图区 -->
+        <section class="relative w-full aspect-[16/10] bg-blue-50 overflow-hidden -mt-[10px]">
+            <!-- Logo (页面左上角) -->
+            <div class="absolute top-9 left-4 z-10 flex items-center">
+                <img src="assets/logo.png" alt="51CTO精培" class="h-7 object-contain">
+            </div>
+            <img src="assets/hero.png" alt="AI开发实战训练营" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80';">
+            <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-brand-lightBg to-transparent"></div>
+        </section>
+
+        <!-- 2. 核心特色：带上圆角的独立大背景板层 -->
+        <section class="w-full bg-gradient-to-b from-white to-brand-lightBg rounded-t-2xl px-4 mb-8 pt-6 pb-6 -mt-4 relative z-10 border-t border-blue-100/30 shadow-[0_-8px_24px_-4px_rgba(37,99,235,0.04)]">
+            <h2 class="text-center font-black text-lg mb-6 flex items-center justify-center space-x-2 text-slate-900">
+                <span class="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-teal-400 rounded-full"></span>
+                <span>核心特色：为什么选择这门课</span>
+                <span class="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-teal-400 rounded-full"></span>
+            </h2>
+
+            <div class="space-y-4">
+                <!-- 亮点 1 -->
+                <div class="bg-brand-card p-4 rounded-2xl border border-blue-100/50 shadow-sm flex items-start space-x-4">
+                    <div class="shrink-0 mt-0.5">
+                        <svg class="w-11 h-11" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="44" height="44" rx="12" fill="url(#blueTeal)" fill-opacity="0.1"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5 12C15.0147 12 13 14.0147 13 16.5C13 18.9853 15.0147 21 17.5 21C18.6652 21 19.7214 20.5559 20.5186 19.8273L23.4477 22.7564C22.5273 23.8208 22 25.1979 22 26.7C22 30.1794 24.8206 33 28.3 33C31.7794 33 34.6 30.1794 34.6 26.7C34.6 23.2206 31.7794 20.4 28.3 20.4C27.1479 20.4 26.0743 20.9103 25.3262 21.7226L22.4172 18.8136C22.7937 18.1136 23 17.3235 23 16.5C23 14.0147 20.9853 12 17.5 12ZM17.5 18C16.6716 18 16 17.3284 16 16.5C16 15.6716 16.6716 15 17.5 15C18.3284 15 19 15.6716 19 16.5C19 17.3284 18.3284 18 17.5 18ZM28.3 29.4C26.8088 29.4 25.6 28.1912 25.6 26.7C25.6 25.2088 26.8088 24 28.3 24C29.7912 24 31 25.2088 31 26.7C31 28.1912 29.7912 29.4 28.3 29.4Z" fill="url(#blueTeal)"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-extrabold text-slate-900 text-base mb-1">全链路能力打通</h4>
+                        <p class="text-sm text-brand-textMuted leading-relaxed">从个人AI娱乐玩法进阶到企业项目化落地，4小时吃透AI开发完整链路，告别碎片化无效学习。</p>
+                    </div>
+                </div>
+
+                <!-- 亮点 2 -->
+                <div class="bg-brand-card p-4 rounded-2xl border border-blue-100/50 shadow-sm flex items-start space-x-4">
+                    <div class="shrink-0 mt-0.5">
+                        <svg class="w-11 h-11" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="44" height="44" rx="12" fill="url(#purplePink)" fill-opacity="0.1"/>
+                            <path d="M12 32H32V30H12V32ZM14 28H18V18H14V28ZM20 28H24V14H20V28ZM26 28H30V20H26V28ZM12 10H32V12H12V10Z" fill="url(#purplePink)"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-extrabold text-slate-900 text-base mb-1">企业真实场景实战</h4>
+                        <p class="text-sm text-brand-textMuted leading-relaxed">直击职场核心痛点，手把手定制贴合公司业务的专属AI助手，学完即可落地复用。</p>
+                    </div>
+                </div>
+
+                <!-- 亮点 3 -->
+                <div class="bg-brand-card p-4 rounded-2xl border border-blue-100/50 shadow-sm flex items-start space-x-4">
+                    <div class="shrink-0 mt-0.5">
+                        <svg class="w-11 h-11" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="44" height="44" rx="12" fill="url(#yellowOrange)" fill-opacity="0.1"/>
+                            <rect x="13" y="25" width="4.5" height="7" rx="1" fill="url(#yellowOrange)"/>
+                            <rect x="20" y="20" width="4.5" height="12" rx="1" fill="url(#yellowOrange)"/>
+                            <rect x="27" y="14" width="4.5" height="18" rx="1" fill="url(#yellowOrange)"/>
+                            <path d="M14 20C18.5 20 22 15.5 27.5 11M27.5 11H22.5M27.5 11V16" stroke="url(#yellowOrange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-extrabold text-slate-900 text-base mb-1">专属高薪突围体系</h4>
+                        <p class="text-sm text-brand-textMuted leading-relaxed">清晰拆解AI职场淘汰与涨薪逻辑，零基础学习智能体搭建、大模型项目化实战技能。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 课程核心价值 (蓝色青色的渐变，加强画面科技感与突破感) -->
+        <section class="px-4 mb-8 -mt-5 relative z-10">
+            <div class="bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 p-6 rounded-2xl border border-blue-400/20 shadow-premium relative overflow-hidden">
+                <!-- 内部微光装饰 -->
+                <div class="absolute -right-12 -bottom-12 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                <div class="absolute -left-12 -top-12 w-32 h-32 bg-cyan-300/10 rounded-full blur-2xl"></div>
+                
+                <h2 class="text-center font-black text-lg mb-4 flex items-center justify-center space-x-2 text-white">
+                    <span class="w-1.5 h-6 bg-white/90 rounded-full"></span>
+                    <span>课程核心价值</span>
+                    <span class="w-1.5 h-6 bg-white/90 rounded-full"></span>
+                </h2>
+                <p class="text-blue-50 text-sm leading-relaxed text-center font-medium">
+                    清晰读懂「个人用AI」与「企业用AI」的本质差距，系统学习从Prompt项目到智能体开发的全流程实战能力。依托两大核心实战项目，零基础完成能力跃迁！
+                </p>
+            </div>
+        </section>
+
+        <!-- 4. 立即预约：晨曦浅蓝高亮突出表单 (浅色层，极易聚焦) -->
+        <section id="register-section" class="px-4 mb-8">
+            <div class="bg-gradient-to-br from-blue-100 via-sky-50 to-blue-200/80 p-5 rounded-2xl border-2 border-blue-300/80 shadow-premium relative overflow-hidden">
+                <!-- 顶部极光蓝紫渐变色条装饰 -->
+                <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-brand-primaryGradStart to-brand-primaryGradEnd"></div>
+                
+                <!-- 稀缺紧迫进度条模块 (FOMO 心理) -->
+                <div class="bg-white/80 border border-blue-200/50 rounded-xl p-3 mb-4 flex flex-col space-y-2">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-rose-500 font-extrabold flex items-center space-x-1">
+                            <span class="relative flex h-2.5 w-2.5 mr-1">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
+                            </span>
+                            算力分配免费名告急！
+                        </span>
+                        <span class="text-slate-500 font-bold">仅剩 <strong id="seats-left" class="text-rose-500 text-sm font-black animate-pulse">17</strong> 席</span>
+                    </div>
+                    <div class="w-full bg-blue-100/60 rounded-full h-2 overflow-hidden">
+                        <div id="seats-progress" class="bg-gradient-to-r from-rose-500 to-orange-400 h-full rounded-full transition-all duration-1000" style="width: 17%;"></div>
+                    </div>
+                </div>
+
+                <h3 class="text-center font-extrabold text-base mb-4 text-slate-900">
+                    立即预约 · <span class="text-blue-600">免费</span>获取直播名额
+                </h3>
+
+                <!-- 表单项 -->
+                <div class="space-y-4">
+                    <!-- 手机号 -->
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="2" width="14" height="20" rx="3" fill="url(#blueTeal)"/>
+                                <circle cx="12" cy="18" r="1.5" fill="white"/>
+                                <rect x="10" y="4" width="4" height="1" rx="0.5" fill="white" fill-opacity="0.6"/>
+                            </svg>
+                        </span>
+                        <input id="phone-input" type="tel" maxlength="11" placeholder="请输入手机号报名" class="w-full bg-white border border-blue-200 rounded-xl py-3.5 pl-12 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white text-base transition-all">
+                    </div>
+
+                    <!-- 验证码 -->
+                    <div class="flex space-x-2">
+                        <div class="relative flex-1">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M18 10C18 6.68629 15.3137 4 12 4C8.68629 4 6 6.68629 6 10C6 11.8566 6.84412 13.5162 8.1727 14.6226L8 15V18C8 19.1046 8.89543 20 10 20H14C15.1046 20 16 19.1046 16 18V15L15.8273 14.6226C17.1559 13.5162 18 11.8566 18 10ZM12 7C10.3431 7 9 8.34315 9 10C9 10.5523 9.44772 11 10 11C10.5523 11 11 10.5523 11 10C11 9.44772 11.4477 9 12 9C12.5523 9 13 9.44772 13 10V13C13 13.5523 13.4477 14 14 14C14.5523 14 15 13.5523 15 13V10C15 8.34315 13.6569 7 12 7Z" fill="url(#blueTeal)"/>
+                                </svg>
+                            </span>
+                            <input id="code-input" type="number" pattern="[0-9]*" placeholder="请输入验证码" class="w-full bg-white border border-blue-200 rounded-xl py-3.5 pl-12 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white text-base transition-all">
+                        </div>
+                        <button id="send-btn" onclick="sendVerificationCode()" class="bg-white border border-blue-200 text-blue-600 hover:text-blue-700 font-bold px-4 py-3 rounded-xl hover:border-blue-400 transition-all text-sm whitespace-nowrap min-w-[110px]">
+                            获取验证码
+                        </button>
+                    </div>
+
+                    <!-- 用户须知勾选 -->
+                    <div class="flex items-start space-x-2 pt-1.5">
+                        <input id="agreement-checkbox" type="checkbox" checked class="mt-1 h-4 w-4 rounded border-blue-200 bg-white text-blue-500 focus:ring-blue-500 focus:ring-offset-white">
+                        <label for="agreement-checkbox" class="text-sm text-slate-500 leading-normal">
+                            勾选代表同意 <button onclick="toggleModal('notice-modal', true)" class="text-blue-600 font-bold underline focus:outline-none">《用户须知》</button> 与隐私条款。
+                        </label>
+                    </div>
+
+                    <!-- 提交按钮 -->
+                    <button id="submit-btn" onclick="submitRegistration()" class="w-full relative overflow-hidden bg-gradient-to-r from-brand-accentGradStart to-brand-accentGradEnd text-white font-bold py-4 rounded-xl shadow-button hover:brightness-105 active:scale-[0.99] transition-all text-base tracking-wide flex items-center justify-center space-x-2 btn-shimmer">
+                        <span>立即免费报名</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 课程日程表 (浅色卡片层) -->
+        <section class="px-4 mb-8">
+            <h2 class="text-center font-black text-lg mb-6 flex items-center justify-center space-x-2 text-slate-900">
+                <span class="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-teal-400 rounded-full"></span>
+                <span>重磅课程大纲</span>
+                <span class="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-teal-400 rounded-full"></span>
+            </h2>
+
+            <!-- Tab 选择器 -->
+            <div class="flex bg-blue-100/30 p-1.5 rounded-2xl border border-blue-100/40 mb-6 backdrop-blur-sm">
+                <button id="day1-tab" onclick="switchDay(1)" class="flex-1 py-3 text-center text-sm font-bold rounded-xl bg-white shadow-sm text-blue-600 transition-all duration-300 flex items-center justify-center space-x-2">
+                    <span class="tab-dot w-1.5 h-1.5 rounded-full bg-blue-500 transition-all duration-300"></span>
+                    <span>Day 1: 实战入门</span>
+                </button>
+                <button id="day2-tab" onclick="switchDay(2)" class="flex-1 py-3 text-center text-sm font-bold text-slate-500 rounded-xl hover:text-slate-800 transition-all duration-300 flex items-center justify-center space-x-2">
+                    <span class="tab-dot w-1.5 h-1.5 rounded-full bg-transparent transition-all duration-300"></span>
+                    <span>Day 2: 职场突围</span>
+                </button>
+            </div>
+
+            <!-- Day 1 内容 -->
+            <div id="day1-content" class="space-y-4 duration-300">
+                <div class="bg-white border border-blue-100/50 shadow-premium rounded-2xl p-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-blue-50/80 text-blue-600 text-xs px-3.5 py-1.5 font-bold rounded-bl-2xl border-l border-b border-blue-100/30">Day 1 课程安排</div>
+                    <h3 class="text-base font-black text-blue-600 mb-6">企业AI开发实战入门</h3>
+                    
+                    <!-- 纵向极细时间垂线 -->
+                    <div class="relative pl-6 border-l-2 border-blue-100/60 ml-3 space-y-8 py-1">
+                        <!-- 节点 1 -->
+                        <div class="relative">
+                            <!-- 优雅双圈定位节点 -->
+                            <span class="absolute -left-[31px] top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white border-2 border-blue-500 shadow-sm">
+                                <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                            </span>
+                            <div class="flex items-center space-x-2 mb-1.5">
+                                <span class="text-xs tracking-wider text-blue-600 font-extrabold px-2 py-0.5 bg-blue-50/80 border border-blue-100/40 rounded-md">认知破局</span>
+                                <span class="text-xs text-slate-400">研讨课 1.5h</span>
+                            </div>
+                            <h4 class="text-sm font-black text-slate-900 leading-snug">1. AI开发前景与企业真实落地玩法</h4>
+                            <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">解读当下AI行业发展趋势与职场红利，拆解企业AI落地的真实运作逻辑，打破大众对AI的浅层认知误区。</p>
+                        </div>
+
+                        <!-- 节点 2 -->
+                        <div class="relative">
+                            <span class="absolute -left-[31px] top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white border-2 border-blue-400 shadow-sm">
+                                <span class="h-1.5 w-1.5 rounded-full bg-blue-400"></span>
+                            </span>
+                            <div class="flex items-center space-x-2 mb-1.5">
+                                <span class="text-xs tracking-wider text-sky-600 font-extrabold px-2 py-0.5 bg-sky-50/80 border border-sky-100/40 rounded-md">维度揭秘</span>
+                                <span class="text-xs text-slate-400">实操精讲 1.0h</span>
+                            </div>
+                            <h4 class="text-sm font-black text-slate-900 leading-snug">2. 个人玩法 VS 企业玩法核心差距</h4>
+                            <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">深度对比个人娱乐式AI使用与企业商业化AI开发的本质区别，找准普通人与职场高阶AI人才的能力差距。</p>
+                        </div>
+
+                        <!-- 节点 3 (高亮实战呼吸节点) -->
+                        <div class="relative">
+                            <span class="absolute -left-[33px] top-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-50 border border-rose-200 shadow-sm">
+                                <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-rose-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                            </span>
+                            <div class="flex items-center space-x-2 mb-1.5">
+                                <span class="text-xs tracking-wider text-rose-500 font-extrabold px-2 py-0.5 bg-rose-50 border border-rose-100 rounded-md">项目实战</span>
+                                <span class="text-xs text-rose-500 font-bold animate-pulse">核心案例 1.5h</span>
+                            </div>
+                            <h4 class="text-sm font-black text-rose-500 leading-snug">【实战1】一句话AI从零生成完整项目</h4>
+                            <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">零基础手把手实操，通过精准指令，驱动AI独立搭建、调试、生成一套完整可落地的企业级项目，学习项目交付核心能力。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 2 内容 (默认隐藏) -->
+            <div id="day2-content" class="space-y-4 hidden duration-300">
+                <div class="bg-white border border-blue-100/50 shadow-premium rounded-2xl p-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-indigo-50/80 text-indigo-600 text-xs px-3.5 py-1.5 font-bold rounded-bl-2xl border-l border-b border-indigo-100/30">Day 2 课程安排</div>
+                    <h3 class="text-base font-black text-indigo-600 mb-6">AI职场突围——贴合您的企业业务</h3>
+                    
+                    <!-- 纵向极细时间垂线 -->
+                    <div class="relative pl-6 border-l-2 border-indigo-100/60 ml-3 space-y-8 py-1">
+                        <!-- 节点 1 (高亮实战呼吸节点) -->
+                        <div class="relative">
+                            <span class="absolute -left-[33px] top-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-50 border border-rose-200 shadow-sm">
+                                <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-rose-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                            </span>
+                            <div class="flex items-center space-x-2 mb-1.5">
+                                <span class="text-xs tracking-wider text-rose-500 font-extrabold px-2 py-0.5 bg-rose-50 border border-rose-100 rounded-md">核心定制</span>
+                                <span class="text-xs text-rose-500 font-bold animate-pulse">业务落地 1.5h</span>
+                            </div>
+                            <h4 class="text-sm font-black text-rose-600 leading-snug">【实战2】打造企业专属业务AI助手</h4>
+                            <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">结合通用企业职场痛点，针对性教学定制适配自身公司、岗位的专属AI助手，解决重复办公、业务低效等核心问题。</p>
+                        </div>
+
+                        <!-- 节点 2 -->
+                        <div class="relative">
+                            <span class="absolute -left-[31px] top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white border-2 border-indigo-500 shadow-sm">
+                                <span class="h-1.5 w-1.5 rounded-full bg-indigo-500"></span>
+                            </span>
+                            <div class="flex items-center space-x-2 mb-1.5">
+                                <span class="text-xs tracking-wider text-indigo-600 font-extrabold px-2 py-0.5 bg-indigo-50/80 border border-indigo-100/40 rounded-md">高阶进阶</span>
+                                <span class="text-xs text-slate-400">深度调优 1.5h</span>
+                            </div>
+                            <h4 class="text-sm font-black text-slate-900 leading-snug">2. 大模型项目化优化与DeepSeek实战</h4>
+                            <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">拆解企业级大模型落地逻辑，讲解模型调优、适配、迭代技巧，结合DeepSeek实战思路，解决AI输出不准、无法规模化落地的难题。</p>
+                        </div>
+
+                        <!-- 节点 3 -->
+                        <div class="relative">
+                            <span class="absolute -left-[31px] top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white border-2 border-violet-500 shadow-sm">
+                                <span class="h-1.5 w-1.5 rounded-full bg-violet-500"></span>
+                            </span>
+                            <div class="flex items-center space-x-2 mb-1.5">
+                                <span class="text-xs tracking-wider text-violet-600 font-extrabold px-2 py-0.5 bg-violet-50/80 border border-violet-100/40 rounded-md">高薪破局</span>
+                                <span class="text-xs text-slate-400">职场规划 1.0h</span>
+                            </div>
+                            <h4 class="text-sm font-black text-slate-900 leading-snug">3. AI时代成长路径与高薪逻辑</h4>
+                            <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">深度解析AI时代谁会被淘汰、谁能实现薪资上涨，给到普通人可落地的成长体系，搭配专属算力福利，助力学员高薪突围。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. 讲师介绍 (重塑为温润轻盈的冰川浅蓝渐变，精致护眼) -->
+        <section class="px-4 mb-8">
+            <h2 class="text-center font-black text-lg mb-6 flex items-center justify-center space-x-2 text-slate-900">
+                <span class="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-teal-400 rounded-full"></span>
+                <span>实力主讲带路</span>
+                <span class="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-teal-400 rounded-full"></span>
+            </h2>
+
+            <div class="bg-gradient-to-br from-indigo-200/50 via-sky-100/40 to-blue-200/50 rounded-2xl border border-blue-200/80 p-5 shadow-premium relative overflow-hidden">
+                <div class="absolute -left-12 -top-12 w-28 h-28 bg-white/40 rounded-full blur-xl"></div>
+                <div class="absolute -right-12 -bottom-12 w-28 h-28 bg-cyan-400/10 rounded-full blur-xl"></div>
+                
+                <div class="flex items-center space-x-4 mb-4 relative z-10">
+                    <!-- 头像区域（左侧） -->
+                    <div class="relative w-16 h-16 rounded-full border-2 border-white/80 overflow-hidden shrink-0 shadow-md bg-slate-900">
+                        <img src="assets/instructor.png" alt="熊老师" class="w-full h-full object-cover object-top">
+                        <div class="absolute bottom-0 inset-x-0 bg-blue-500 text-white text-[10px] text-center font-bold py-0.5 leading-none">
+                            10年背景
+                        </div>
+                    </div>
+                    <!-- 基本信息 -->
+                    <div>
+                        <h3 class="text-base font-black text-slate-900 flex items-center space-x-1.5">
+                            <span>熊老师</span>
+                            <span class="text-xs text-blue-600 font-bold bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">萝卜老师</span>
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-1">10年央国企架构级项目开发经验</p>
+                    </div>
+                </div>
+
+                <!-- 讲师详细资历 -->
+                <p class="text-xs text-slate-700 leading-relaxed border-t border-slate-200/80 pt-3.5 relative z-10">
+                    主导多个高并发系统的架构设计与开发工作，精通大模型、AI算法、机器学习、深度学习、神经网络、提示词、RAG、微调等AI技术。凭借丰富的企业AI实践经验，近一年成功推动多个AI项目实现投产、接入并落地。
+                </p>
+            </div>
+        </section>
+
+        <!-- 7. 学习收获 (浅色层) -->
+        <section class="px-4 mb-8">
+            <h2 class="text-center font-black text-lg mb-6 flex items-center justify-center space-x-2 text-slate-900">
+                <span class="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-teal-400 rounded-full"></span>
+                <span>四大核心学习收获</span>
+                <span class="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-teal-400 rounded-full"></span>
+            </h2>
+
+            <div class="grid grid-cols-2 gap-3.5">
+                <!-- 收获卡片 1 -->
+                <div class="bg-brand-card p-4 rounded-2xl border border-blue-100/50 shadow-sm text-center flex flex-col items-center">
+                    <svg class="w-10 h-10 mb-2" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="22" cy="22" r="22" fill="url(#blueTeal)" fill-opacity="0.1"/>
+                        <path d="M15 29L19 25L23 29L29 23L27 21H32V26L30 24L24 30L20 26L16 30" fill="url(#blueTeal)" stroke="url(#blueTeal)" stroke-width="2"/>
+                    </svg>
+                    <h4 class="text-sm font-black text-slate-900 mb-1">0-1项目交付</h4>
+                    <p class="text-xs text-brand-textMuted leading-relaxed">独立用AI生成交付完整企业项目，摆脱浅层无意义瞎聊。</p>
+                </div>
+                <!-- 收获卡片 2 -->
+                <div class="bg-brand-card p-4 rounded-2xl border border-blue-100/50 shadow-sm text-center flex flex-col items-center">
+                    <svg class="w-10 h-10 mb-2" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="22" cy="22" r="22" fill="url(#purplePink)" fill-opacity="0.1"/>
+                        <circle cx="22" cy="22" r="9" fill="url(#purplePink)"/>
+                        <circle cx="22" cy="22" r="5" fill="white"/>
+                    </svg>
+                    <h4 class="text-sm font-black text-slate-900 mb-1">定制智能体</h4>
+                    <p class="text-xs text-brand-textMuted leading-relaxed">贴合自身真实公司业务搭建，解决工作痛点，极大提升效能。</p>
+                </div>
+                <!-- 收获卡片 3 -->
+                <div class="bg-brand-card p-4 rounded-2xl border border-blue-100/50 shadow-sm text-center flex flex-col items-center">
+                    <svg class="w-10 h-10 mb-2" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="22" cy="22" r="22" fill="url(#yellowOrange)" fill-opacity="0.1"/>
+                        <path d="M22 10L14 24H21V34L29 20H22V10Z" fill="url(#yellowOrange)"/>
+                    </svg>
+                    <h4 class="text-sm font-black text-slate-900 mb-1">DeepSeek 调优</h4>
+                    <p class="text-xs text-brand-textMuted leading-relaxed">掌握项目化核心优化手段及DeepSeek调优实战，输出精确。</p>
+                </div>
+                <!-- 收获卡片 4 -->
+                <div class="bg-brand-card p-4 rounded-2xl border border-blue-100/50 shadow-sm text-center flex flex-col items-center">
+                    <svg class="w-10 h-10 mb-2" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="22" cy="22" r="22" fill="url(#greenTeal)" fill-opacity="0.1"/>
+                        <rect x="15" y="15" width="14" height="14" rx="7" fill="url(#greenTeal)"/>
+                        <path d="M20 20H24M22 18V26" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <h4 class="text-sm font-black text-slate-900 mb-1">职场高薪破局</h4>
+                    <p class="text-xs text-brand-textMuted leading-relaxed">看懂淘汰与升职加薪底层密码，掌握不可替代的高价值能力。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. 课程学习流程 (浅色层) -->
+        <section class="px-4 mb-10">
+            <h2 class="text-center font-black text-lg mb-6 flex items-center justify-center space-x-2 text-slate-900">
+                <span class="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-teal-400 rounded-full"></span>
+                <span>学习与参与流程</span>
+                <span class="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-teal-400 rounded-full"></span>
+            </h2>
+
+            <div class="flex items-center justify-between space-x-2 bg-brand-card p-4 rounded-2xl border border-blue-100/50 shadow-premium overflow-x-auto no-scrollbar">
+                <!-- Step 1 -->
+                <div class="flex flex-col items-center text-center shrink-0 w-[84px]">
+                    <div class="relative w-10 h-10 rounded-full bg-blue-50/50 flex items-center justify-center text-slate-800 text-xs font-black mb-2 border border-blue-100">
+                        01
+                    </div>
+                    <span class="text-xs font-black text-slate-800">手机验证码</span>
+                    <span class="text-xs text-brand-textMuted mt-0.5">完成注册</span>
+                </div>
+
+                <div class="text-blue-200 shrink-0 mb-4">➔</div>
+
+                <!-- Step 2 -->
+                <div class="flex flex-col items-center text-center shrink-0 w-[84px]">
+                    <div class="relative w-10 h-10 rounded-full bg-blue-50/50 flex items-center justify-center text-slate-800 text-xs font-black mb-2 border border-blue-100">
+                        02
+                    </div>
+                    <span class="text-xs font-black text-slate-800">扫码加微信</span>
+                    <span class="text-xs text-brand-textMuted mt-0.5">专属班主任</span>
+                </div>
+
+                <div class="text-blue-200 shrink-0 mb-4">➔</div>
+
+                <!-- Step 3 -->
+                <div class="flex flex-col items-center text-center shrink-0 w-[84px]">
+                    <div class="relative w-10 h-10 rounded-full bg-blue-50/50 flex items-center justify-center text-slate-800 text-xs font-black mb-2 border border-blue-100">
+                        03
+                    </div>
+                    <span class="text-xs font-black text-slate-800">加入群组</span>
+                    <span class="text-xs text-brand-textMuted mt-0.5">接受上课邀约</span>
+                </div>
+
+                <div class="text-blue-200 shrink-0 mb-4">➔</div>
+
+                <!-- Step 4 -->
+                <div class="flex flex-col items-center text-center shrink-0 w-[84px]">
+                    <div class="relative w-10 h-10 rounded-full bg-gradient-to-r from-brand-accentGradStart to-brand-accentGradEnd text-white flex items-center justify-center text-xs font-black mb-2 shadow-sm">
+                        04
+                    </div>
+                    <span class="text-xs font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-accentGradStart to-brand-accentGradEnd">上直播课</span>
+                    <span class="text-xs text-brand-textMuted mt-0.5">开启学习之旅</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. 官方脚注说明 -->
+        <footer class="px-4 py-8 bg-slate-900 border-t border-slate-950 text-center text-slate-400 text-xs space-y-2">
+            <p>北京无忧创想信息技术有限公司 联系我们: 400-101-1651</p>
+            <p>Copyright © 2005-2026 51CTO.com | 京ICP备09067568号-5</p>
+            <div class="flex justify-center space-x-3 text-slate-500 pt-2 text-xs">
+                <span>官方认证</span>
+                <span>•</span>
+                <span>正规直营</span>
+                <span>•</span>
+                <span>信息保护</span>
+            </div>
+        </footer>
+
+        <!-- 10. 悬浮底栏 -->
+        <div class="fixed bottom-0 z-40 w-full max-w-[480px] bg-white/95 backdrop-blur-md border-t border-blue-100/60 px-4 py-3.5 flex items-center justify-between shadow-premium">
+            <div class="flex flex-col">
+                <span class="text-xs text-slate-400 font-bold">直播限时特惠</span>
+                <div class="flex items-baseline space-x-1">
+                    <span class="text-brand-accentGradStart text-xs font-black">¥</span>
+                    <span class="text-brand-accentGradStart text-2xl font-black">0.00</span>
+                    <span class="text-slate-400 line-through text-xs ml-1">¥199</span>
+                </div>
+            </div>
+            <button onclick="scrollToRegister()" class="relative overflow-hidden bg-gradient-to-r from-brand-accentGradStart to-brand-accentGradEnd text-white text-sm font-bold px-8 py-3.5 rounded-full shadow-button hover:brightness-105 active:scale-95 transition-all btn-shimmer">
+                立即免费报名
+            </button>
+        </div>
+
+        <!-- 11. 弹窗组件：用户须知 -->
+        <div id="notice-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-6 hidden">
+            <div class="bg-white border border-blue-100 rounded-2xl w-full max-w-[360px] p-5 shadow-premium relative">
+                <button onclick="toggleModal('notice-modal', false)" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                <h3 class="text-base font-black text-slate-900 mb-3">《用户须知协议》</h3>
+                <div class="text-xs text-slate-500 space-y-2 h-[220px] overflow-y-auto pr-1 no-scrollbar leading-relaxed">
+                    <p>1. 本实战训练营为高含金量专场直播课，请确保填写真实的手机号码，以便接收上课短信和算力福利通知。</p>
+                    <p>2. 用户需根据班主任微信引导加入专属社群并按时听课，否则会面临名额被收回及黑名单惩罚。</p>
+                    <p>3. 所有配套的算力平台福利，仅在开课期间按上课时长进行随机或按规则分配，活动最终解释权归北京无忧创想所有。</p>
+                    <p>4. 我们非常注重用户个人信息的保护。您在此提交的手机号仅作为预约通知及课程辅导服务，绝不向任何第三方透露。</p>
+                </div>
+                <button onclick="toggleModal('notice-modal', false)" class="w-full mt-4 bg-gradient-to-r from-brand-primaryGradStart to-brand-primaryGradEnd text-white font-bold py-2.5 rounded-xl text-sm hover:brightness-105 transition-all shadow-sm">
+                    我已阅读并知悉
+                </button>
+            </div>
+        </div>
+
+        <!-- 12. 弹窗组件：报名成功 && 班主任微信扫码加群 -->
+        <div id="success-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm px-6 hidden">
+            <div class="bg-white border border-blue-50 rounded-3xl w-full max-w-[380px] p-6 shadow-premium relative text-center">
+                <div class="absolute -top-10 left-1/2 -translate-x-1/2 text-4xl animate-bounce">🎉</div>
+
+                <h3 class="text-lg font-black text-slate-900 mb-1">🎉 恭喜您报名成功！</h3>
+                <p class="text-sm text-brand-textMuted mb-5">只剩最后一步，即可锁课听讲</p>
+
+                <div class="bg-blue-50/50 rounded-2xl p-4 border border-blue-100 space-y-4 mb-4">
+                    <p class="text-sm text-blue-600 font-extrabold">【极速入群步骤】</p>
+                    
+                    <div class="flex justify-center">
+                        <div class="bg-white p-2.5 rounded-xl shadow-md border border-blue-50 relative">
+                            <svg class="w-28 h-28 text-slate-900" viewBox="0 0 100 100">
+                                <rect width="100" height="100" fill="white"/>
+                                <rect x="5" y="5" width="25" height="25" fill="black"/>
+                                <rect x="9" y="9" width="17" height="17" fill="white"/>
+                                <rect x="12" y="12" width="11" height="11" fill="black"/>
+                                <rect x="70" y="5" width="25" height="25" fill="black"/>
+                                <rect x="74" y="9" width="17" height="17" fill="white"/>
+                                <rect x="77" y="12" width="11" height="11" fill="black"/>
+                                <rect x="5" y="70" width="25" height="25" fill="black"/>
+                                <rect x="9" y="74" width="17" height="17" fill="white"/>
+                                <rect x="12" y="77" width="11" height="11" fill="black"/>
+                                <rect x="40" y="40" width="20" height="20" fill="#00f2fe"/>
+                                <rect x="45" y="45" width="10" height="10" fill="black"/>
+                                <path d="M 35,10 H 45 V 20 H 35 Z M 50,10 H 55 V 30 H 50 Z M 60,15 H 65 V 25 H 60 Z" fill="black"/>
+                                <path d="M 35,70 H 45 V 80 H 35 Z M 50,75 H 65 V 85 H 50 Z M 70,35 H 85 V 45 H 70 Z M 70,55 H 85 V 65 H 70 Z" fill="black"/>
+                                <path d="M 10,40 H 20 V 55 H 10 Z M 40,70 H 45 V 90 H 40 Z" fill="black"/>
+                            </svg>
+                            <div class="absolute inset-0 m-auto w-7 h-7 bg-white rounded-md border border-blue-50 flex items-center justify-center shadow-sm">
+                                <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-1">
+                        <span class="text-sm text-slate-800 font-bold block">长按/扫描二维码加班主任微信</span>
+                        <span class="text-xs text-slate-500 block">微信号：<strong id="wx-id" class="text-blue-600">huawei_ai_helper</strong></span>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <button onclick="copyWechatId()" class="w-full bg-emerald-600 text-white text-xs font-bold py-3 rounded-xl hover:bg-emerald-500 transition-all flex items-center justify-center space-x-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                        </svg>
+                        <span>一键复制微信号并加群</span>
+                    </button>
+                    <button onclick="toggleModal('success-modal', false)" class="w-full text-slate-400 text-xs py-2 hover:text-slate-600 transition-all">
+                        暂不加群，返回页面
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 自定义通知组件 -->
+    <div id="toast" class="fixed top-12 z-50 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-3 rounded-full text-xs shadow-2xl transition-all duration-300 opacity-0 scale-95 pointer-events-none">
+        <span id="toast-text"></span>
+    </div>
+
+    <script>
+        // 平滑滚动至表单区域
+        function scrollToRegister() {
+            const el = document.getElementById('register-section');
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // 控制弹窗
+        function toggleModal(modalId, show) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                if (show) {
+                    modal.classList.remove('hidden');
+                } else {
+                    modal.classList.add('hidden');
+                }
+            }
+        }
+
+        // Tab切换高级处理
+        function switchDay(day) {
+            const tab1 = document.getElementById('day1-tab');
+            const tab2 = document.getElementById('day2-tab');
+            const content1 = document.getElementById('day1-content');
+            const content2 = document.getElementById('day2-content');
+
+            if (day === 1) {
+                // 激活 Tab 1 视觉
+                tab1.className = "flex-1 py-3 text-center text-sm font-bold rounded-xl bg-white shadow-sm text-blue-600 transition-all duration-300 flex items-center justify-center space-x-2";
+                tab1.querySelector('.tab-dot').className = "tab-dot w-1.5 h-1.5 rounded-full bg-blue-500 transition-all duration-300";
+                
+                // 熄灭 Tab 2 视觉
+                tab2.className = "flex-1 py-3 text-center text-sm font-bold text-slate-500 rounded-xl hover:text-slate-800 transition-all duration-300 flex items-center justify-center space-x-2";
+                tab2.querySelector('.tab-dot').className = "tab-dot w-1.5 h-1.5 rounded-full bg-transparent transition-all duration-300";
+                
+                content1.classList.remove('hidden');
+                content2.classList.add('hidden');
+            } else {
+                // 激活 Tab 2 视觉
+                tab2.className = "flex-1 py-3 text-center text-sm font-bold rounded-xl bg-white shadow-sm text-blue-600 transition-all duration-300 flex items-center justify-center space-x-2";
+                tab2.querySelector('.tab-dot').className = "tab-dot w-1.5 h-1.5 rounded-full bg-blue-500 transition-all duration-300";
+                
+                // 熄灭 Tab 1 视觉
+                tab1.className = "flex-1 py-3 text-center text-sm font-bold text-slate-500 rounded-xl hover:text-slate-800 transition-all duration-300 flex items-center justify-center space-x-2";
+                tab1.querySelector('.tab-dot').className = "tab-dot w-1.5 h-1.5 rounded-full bg-transparent transition-all duration-300";
+                
+                content2.classList.remove('hidden');
+                content1.classList.add('hidden');
+            }
+        }
+
+        // 验证码倒计时
+        let countdown = 60;
+        let timer = null;
+        function sendVerificationCode() {
+            const phoneInput = document.getElementById('phone-input').value.trim();
+            if (!/^1[3-9]\d{9}$/.test(phoneInput)) {
+                showToast('请输入有效的11位手机号 📱');
+                return;
+            }
+
+            const sendBtn = document.getElementById('send-btn');
+            if (timer) return; // 正在倒计时，禁用重复点击
+
+            showToast('验证码发送成功 🚀 默认: 8888');
+            
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = `${countdown}s`;
+            
+            timer = setInterval(() => {
+                countdown--;
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    timer = null;
+                    countdown = 60;
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = '获取验证码';
+                } else {
+                    sendBtn.innerHTML = `${countdown}s`;
+                }
+            }, 1000);
+        }
+
+        // 提交报名表单
+        function submitRegistration() {
+            const phoneInput = document.getElementById('phone-input').value.trim();
+            const codeInput = document.getElementById('code-input').value.trim();
+            const isAgreed = document.getElementById('agreement-checkbox').checked;
+
+            if (!/^1[3-9]\d{9}$/.test(phoneInput)) {
+                showToast('请输入有效的11位手机号 📱');
+                return;
+            }
+
+            if (!codeInput) {
+                showToast('请输入验证码 🔑');
+                return;
+            }
+
+            if (!isAgreed) {
+                showToast('请阅读并勾选用户协议条款 📜');
+                return;
+            }
+
+            toggleModal('success-modal', true);
+        }
+
+        // 复制微信号 (兼容 iframe)
+        function copyWechatId() {
+            const wxId = document.getElementById('wx-id').innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = wxId;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('微信号复制成功！正在拉起微信...请手动添加 🤝');
+            } catch (err) {
+                showToast('复制失败，请手动长按复制微信号！');
+            }
+            document.body.removeChild(textarea);
+
+            setTimeout(() => {
+                window.location.href = 'weixin://';
+            }, 1500);
+        }
+
+        // Toast 消息浮层
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            toastText.innerText = text;
+            toast.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'scale-100');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'scale-100');
+                toast.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+            }, 2500);
+        }
+
+        // 模拟名额动态倒计时递减，制造真实紧迫感
+        let seats = 17;
+        const seatsTimer = setInterval(() => {
+            if (seats > 3) {
+                // 随机减少 1 ~ 2 个名额
+                const dec = Math.floor(Math.random() * 2) + 1;
+                seats = Math.max(3, seats - dec);
+                
+                const seatsText = document.getElementById('seats-left');
+                const seatsProgress = document.getElementById('seats-progress');
+                if (seatsText && seatsProgress) {
+                    seatsText.innerText = seats;
+                    // 动态更新进度条 (最小保持 3 席)
+                    seatsProgress.style.width = `${(seats / 100) * 100}%`;
+                }
+            } else {
+                clearInterval(seatsTimer);
+            }
+        }, 15000); // 每 15 秒波动一次
+    </script>
+</body>
+</html>
