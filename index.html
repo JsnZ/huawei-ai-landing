@@ -67,6 +67,15 @@
             transform: skewX(-25deg);
             animation: shimmer 3.5s infinite;
         }
+        /* 去除 type="number" 的上下箭头 */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
 <body class="text-brand-textDark flex justify-center min-h-screen">
